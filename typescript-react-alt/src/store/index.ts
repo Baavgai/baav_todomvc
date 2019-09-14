@@ -1,12 +1,21 @@
-export * from "./storeConfig";
 export * from "./actions";
 export * from "./types";
+// export * from "./reducer";
 
-import * as actionCreators from "store/actionCreators";
-export { actionCreators };
+import * as React from "react";
+import { Dispatch, useContext } from "react";
+import { Actions } from "store/actions";
+import { InitAppState, AppState } from "store/types";
+import { reducer } from "store/reducer";
 
-import { connect } from "react-redux";
-import { AppState } from "store/types";
+export type AppDispatch = Dispatch<Actions>;
 
-// export const appConnect = connect((x: AppStateEx) => x);
-export const appConnect = <T>(f: (appState: AppState) => T) => connect(f);
+export type AppDispatchProp = { dispatch: AppDispatch };
+
+export type AppContextType = AppState & AppDispatchProp;
+
+export const AppContext = React.createContext<AppContextType>({...InitAppState, dispatch: () => "dispatch not bound" });
+
+export const initAppReducer = () => React.useReducer(reducer, InitAppState);
+
+export const useAppReducer = () => useContext(AppContext);
