@@ -12,4 +12,5 @@ export type Actions =
     | ReturnType<typeof ac.undoEditItem>
     | ReturnType<typeof ac.commitEditItem>
     | ReturnType<typeof ac.updateEditItem>
+    | ReturnType<typeof ac.toggleAll>
     ;

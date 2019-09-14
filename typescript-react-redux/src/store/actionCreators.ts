@@ -32,3 +32,6 @@ export const commitEditItem = () =>
 
 export const updateEditItem = (editEntry: string) =>
     ({ type: "@@app/updateEditItem", editEntry } as const);
+
+export const toggleAll = () =>
+    ({ type: "@@app/toggleAll" } as const);

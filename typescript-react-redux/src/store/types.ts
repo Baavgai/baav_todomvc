@@ -11,10 +11,12 @@ export interface AppState {
     newEntry: string;
     editEntry: string;
     editing?: number;
+    loaded: boolean;
 }
 
 export const InitAppState: AppState = {
     toDoItems: [],
+    loaded: false,
     displayState: "all",
     newEntry: "",
     editEntry: ""

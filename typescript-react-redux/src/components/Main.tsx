@@ -1,8 +1,9 @@
 import * as React from "react";
 import { appConnect, AppState, ConnectedProps } from "store";
 import { TodoItem } from "components/TodoItem";
+import { toggleAll } from "store/actionCreators";
 
-interface ViewPropData  {
+interface ViewPropData {
     liveItems: number[];
 }
 
@@ -13,7 +14,7 @@ const Input = (p: ViewProps) =>
         id="toggle-all"
         className="toggle-all"
         type="checkbox"
-        onChange={e => console.log("toggleAll", e)}
+        onChange={e => p.dispatch(toggleAll())}
         checked={p.liveItems.length === 0}
     />;
 
@@ -36,7 +37,7 @@ const mapStateToProps = (s: AppState): ViewPropData => {
     const liveItems = s.displayState === "all"
         ? s.toDoItems.map((_, i) => i)
         : s.toDoItems
-            .map((x, idx) => ({ idx, keep: x.completed === (s.displayState === "completed")}))
+            .map((x, idx) => ({ idx, keep: x.completed === (s.displayState === "completed") }))
             .filter(x => x.keep)
             .map(x => x.idx);
     return { liveItems };

@@ -13,9 +13,10 @@ export const reducer: Reducer<AppState, Actions> = (state = InitAppState, action
     } else if (action.type === "@@app/updateDisplayState") {
         return { ...state, displayState: action.displayState };
 
-    } else if (action.type === "@@app/load") {
+    } else if (action.type === "@@app/load" && !state.loaded) {
         return {
             ...state,
+            loaded: true,
             toDoItems: ["Get eggs.", "Get milk.", "Get bread.", "Make french toast."].map((text, i) => ({ text, completed: i < 2 }))
         };
 
@@ -46,6 +47,10 @@ export const reducer: Reducer<AppState, Actions> = (state = InitAppState, action
             ...state,
             toDoItems: state.toDoItems.map((x, i) => i === action.itemIndex ? ({ ...x, completed: !x.completed }) : x)
         };
+
+    } else if (action.type === "@@app/toggleAll") {
+        const completed = state.toDoItems.some(x => !x.completed);
+        return { ...state, toDoItems: state.toDoItems.map(x => ({ ...x, completed })) };
 
     } else {
         return state;
