@@ -15,7 +15,8 @@ export const useAppSelector = <TSelected>(selector: (state: AppState) => TSelect
     useSelector<AppState, TSelected>(selector, equalityFn);
 
 export const selectorConnect = <T>(selector: (state: AppState) => T) => {
-    const dispatch: AppDispatch = useDispatch();
+    // const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch();
     const dp: AppDispatchProp = { dispatch };
     return (state: AppState) => ({ ...selector(state), ...dp });
 };
@@ -33,7 +34,6 @@ export const useConnectedAppSelector = <T extends AppDispatchProp>(selector: (st
     } else {
         return useAppSelector(exSelector);
     }
-    
 };
 
 // , equalityFn?: (left: T, right: T) => boolean

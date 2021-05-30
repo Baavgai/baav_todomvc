@@ -11,7 +11,7 @@
     },
     {
       "type": "npm",
-      "script": "serve",
+      "script": "start",
       "problemMatcher": [],
       "group": { "isDefault": true, "kind": "test"}
     }
