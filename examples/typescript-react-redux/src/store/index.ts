@@ -6,4 +6,4 @@ import { connect } from "react-redux";
 import { AppState } from "store/types";
 
 export type ConnectedProps<TProps> = TProps & DispatchProp;
-export const appConnect = <TStateProps, TOwnProps = {}>(f: (appState: AppState, ownProps?: TOwnProps) => TStateProps) => connect(f);
+export const appConnect = <TStateProps, TOwnProps>(f: (appState: AppState, ownProps: TOwnProps) => TStateProps) => connect(f);
