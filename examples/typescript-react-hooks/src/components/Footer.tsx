@@ -14,7 +14,7 @@ const ClearButton = ({ canClear, dispatch }: ViewProps) =>
         :
         <button
             className="clear-completed"
-            onClick={e => dispatch(clearCompleted())}>
+            onClick={() => dispatch(clearCompleted())}>
             Clear completed
         </button>
     ;

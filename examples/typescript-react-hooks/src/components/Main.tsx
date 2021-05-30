@@ -12,7 +12,7 @@ const Input = (p: ViewProps) =>
         id="toggle-all"
         className="toggle-all"
         type="checkbox"
-        onChange={e => p.dispatch(toggleAll())}
+        onChange={() => p.dispatch(toggleAll())}
         checked={p.liveItems.length === 0}
     />;
 

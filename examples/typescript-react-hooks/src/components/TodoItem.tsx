@@ -20,17 +20,17 @@ const ViewField = (p: ViewProps) =>
             className="toggle"
             type="checkbox"
             checked={p.completed}
-            onChange={e => p.dispatch(toggleItem(p.itemIndex))}
+            onChange={() => p.dispatch(toggleItem(p.itemIndex))}
         />
-        <label onDoubleClick={e => p.dispatch(startEditItem(p.itemIndex))}>{p.text}</label>
-        <button className="destroy" onClick={e => p.dispatch(destroyItem(p.itemIndex))} />
+        <label onDoubleClick={() => p.dispatch(startEditItem(p.itemIndex))}>{p.text}</label>
+        <button className="destroy" onClick={() => p.dispatch(destroyItem(p.itemIndex))} />
     </div>;
 
 const EditField = (p: ViewProps) =>
     <input
         className="edit"
         value={p.editEntry}
-        onBlur={e => p.dispatch(undoEditItem())}
+        onBlur={() => p.dispatch(undoEditItem())}
         onChange={e => p.dispatch(updateEditItem(e.target.value))}
         onKeyDown={enterHandler(p.dispatch, commitEditItem)}
     />;
