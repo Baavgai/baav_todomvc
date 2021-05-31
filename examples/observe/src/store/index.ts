@@ -1,13 +1,12 @@
 export * from "./storeConfig";
 export * from "./actions";
-export * from "./types";
 
-import { AppState } from "store/types";
+import { AppState } from "types";
 import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "store/actions";
 
-export type AppDispatch = Dispatch<Actions>;
+// export type AppDispatch = Dispatch<Actions>;
 
 export type AppDispatchProp = { dispatch : Dispatch<Actions> };
 

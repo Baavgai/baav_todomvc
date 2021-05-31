@@ -1,4 +1,4 @@
-import { DisplayState } from "store";
+import { DisplayState } from "types";
 
 export const updateCurrentEntry = (currentEntry: string) =>
     ({ type: "@@app/updateCurrentEntry", currentEntry } as const);
