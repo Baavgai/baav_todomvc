@@ -1,43 +1,68 @@
 import * as React from "react";
-import { ToDoItem as ToDoItemType, useConnectedAppSelector, AppDispatchProp } from "store";
+
+import { useAppDispatch, useAppSelector, AppDispatch } from "store";
+import { ToDoItem } from "types";
 import { enterHandler } from "appUtil";
-import { toggleItem, destroyItem, startEditItem, updateEditItem, undoEditItem, commitEditItem } from "store/actionCreators";
+import { toggleItem, destroyItem, startEditItem, updateEditItem, undoEditItem, commitEditItem } from "store";
 
 export interface TodoItemProps {
-    itemIndex: number;
+  item: ToDoItem;
 }
 
-interface ViewProps extends ToDoItemType, TodoItemProps, AppDispatchProp {
-    editing: boolean;
-    editEntry: string;
+interface ViewProps {
+  item: ToDoItem;
+  editing: boolean;
+  dispatch: AppDispatch;
 }
 
 const ViewField = (p: ViewProps) =>
-    <div className="view">
-        <input
-            className="toggle"
-            type="checkbox"
-            checked={p.completed}
-            onChange={e => p.dispatch(toggleItem(p.itemIndex))}
-        />
-        <label onDoubleClick={e => p.dispatch(startEditItem(p.itemIndex))}>{p.text}</label>
-        <button className="destroy" onClick={e => p.dispatch(destroyItem(p.itemIndex))} />
-    </div>;
+  <div className="view">
+    <input
+      className="toggle"
+      type="checkbox"
+      checked={p.item.completed}
+      onChange={() => p.dispatch(toggleItem(p.item.itemId))}
+    />
+    <label onDoubleClick={() => p.dispatch(startEditItem(p.item.itemId))}>{p.item.text}</label>
+    <button className="destroy" onClick={() => p.dispatch(destroyItem(p.item.itemId))} />
+  </div>;
 
 const EditField = (p: ViewProps) =>
-    <input
-        className="edit"
-        value={p.editEntry}
-        onBlur={e => p.dispatch(undoEditItem())}
-        onChange={e => p.dispatch(updateEditItem(e.target.value))}
-        onKeyDown={enterHandler(p.dispatch, commitEditItem)}
-    />;
+  <input
+    className="edit"
+    value={p.item.text}
+    onBlur={() => p.dispatch(undoEditItem())}
+    onChange={e => p.dispatch(updateEditItem(e.target.value))}
+    onKeyDown={enterHandler(p.dispatch, commitEditItem)}
+  />;
 
-export const TodoItem = ({ itemIndex }: TodoItemProps) => {
+export const TodoItem = (p: TodoItemProps) => {
+  const dispatch = useAppDispatch();
+  const vp = useAppSelector<ViewProps>(s => {
+    const editing = p.item.itemId === s.editing?.itemId;
+    const item = editing ? s.editing! : p.item;
+    return {
+      item,
+      editing,
+      dispatch
+    };
+  });
+  const itemClassName = [(vp.editing ? "editing" : undefined), (vp.item.completed ? "completed" : undefined)]
+    .filter(x => x)
+    .join(" ");
+  return (
+    <li className={itemClassName}>
+      <ViewField {...vp} />
+      <EditField {...vp} />
+    </li>
+  );
+};
+
+/*
+export const TodoItem = ({ itemId }: TodoItemProps) => {
     const p = useConnectedAppSelector<ViewProps>(s => {
-        const { editEntry } = s;
-        const item = s.toDoItems[itemIndex];
-        const editing = s.editing === itemIndex;
+        const item = s.toDoItems.find(x => x.itemId === itemId);
+        const editing = s.editing?.itemId === itemIndex;
         return {
             ...item,
             editing, editEntry,
@@ -53,4 +78,5 @@ export const TodoItem = ({ itemIndex }: TodoItemProps) => {
             <EditField {...p} />
         </li>
     );
-}
+};
+*/

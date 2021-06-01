@@ -1,47 +1,27 @@
-import { createStore, compose, Store, StoreEnhancer} from "redux";
+import { createStore, compose, Store, StoreEnhancer, applyMiddleware, Middleware} from "redux";
+import { createEpicMiddleware } from "redux-observable";
 import { AppState } from "types";
 import { reducer } from "store/reducer";
+import { epics } from "store/epics";
+// import { appLoad } from "store";
 
-const InitAppState: AppState = {
-  toDoItems: [],
-  loaded: false,
-  displayState: "all",
-  newEntry: "",
-  editEntry: ""
-};
-
-
-const createEnhancer = (): StoreEnhancer | undefined => {
+const createEnhancer = (mid1: Middleware): StoreEnhancer => {
     if (typeof window === "undefined") {
-        return undefined;
+        return applyMiddleware(mid1);
     } else {
         // eslint-disable-next-line no-underscore-dangle
         const composeEnhancer: typeof compose = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-        return composeEnhancer();
+        return composeEnhancer(applyMiddleware(mid1));
     }
 };
 
 export function configureStore(): Store<AppState> {
+  const epicMiddleware = createEpicMiddleware();
     const store = createStore(
         reducer,
-        InitAppState,
-        createEnhancer()
+        createEnhancer(epicMiddleware)
     );
+    epicMiddleware.run(epics);
     return store;
 }
 
-
-import { combineEpics } from 'redux-observable';
-import { combineReducers } from 'redux';
-import ping, { pingEpic } from './ping';
-import users, { fetchUserEpic } from './users';
-
-export const rootEpic = combineEpics(
-  pingEpic,
-  fetchUserEpic
-);
-
-export const rootReducer = combineReducers({
-  ping,
-  users
-});

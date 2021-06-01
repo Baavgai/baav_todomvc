@@ -2,7 +2,7 @@ import * as React from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "store";
 import { enterHandler } from "appUtil";
-import { addEntry, updateCurrentEntry } from "store/actionCreators";
+import { addEntry, updateCurrentEntry } from "store/actions";
 
 
 const Input = () => {

@@ -1,52 +1,59 @@
 import * as React from "react";
-import { AppState, DisplayState, useConnectedAppSelector, AppDispatchProp } from "store";
-import { updateDisplayState, clearCompleted } from "store/actionCreators";
+import { useAppDispatch, useAppSelector } from "store";
+import * as ac from "store/actions";
+import { DisplayState } from "types";
 
-interface ViewProps extends AppState, AppDispatchProp {
-    liveItemCount: number;
-    canClear: boolean;
+interface ViewProps {
+  displayState: DisplayState;
+  liveItemCount: number;
+  canClear: boolean;
+  updateDisplayState: (displayState: DisplayState) => void;
+  clearCompleted: () => void;
 }
-const ClearButton = ({ canClear, dispatch }: ViewProps) =>
-    !canClear
-        ? <></>
-        :
-        <button
-            className="clear-completed"
-            onClick={e => dispatch(clearCompleted())}>
-            Clear completed
+const ClearButton = (p: ViewProps) =>
+  !p.canClear
+    ? <></>
+    :
+    <button
+      className="clear-completed"
+      onClick={() => p.clearCompleted()}>
+      Clear completed
         </button>
-    ;
+  ;
 
 const Count = (p: ViewProps) =>
-    <span className="todo-count"><strong>{p.liveItemCount}</strong> {p.liveItemCount === 1 ? "item" : "items"} left</span>;
+  <span className="todo-count"><strong>{p.liveItemCount}</strong> {p.liveItemCount === 1 ? "item" : "items"} left</span>;
 
 const FilterItem = (p: ViewProps & { filterState: DisplayState }) =>
-    <li><a href="#" onClick={() => p.dispatch(updateDisplayState(p.filterState))}
-        className={p.displayState === p.filterState ? "selected" : ""}>{
-            p.filterState === "all"
-                ? "All"
-                : (p.filterState === "active") ? "Active" : "Completed"
-        }</a>
-    </li>;
+  <li><a href="#" onClick={() => p.updateDisplayState(p.filterState)}
+    className={p.displayState === p.filterState ? "selected" : ""}>{
+      p.filterState === "all"
+        ? "All"
+        : (p.filterState === "active") ? "Active" : "Completed"
+    }</a>
+  </li>;
 
 const Filters = (p: ViewProps) =>
-    <ul className="filters">
-        <FilterItem {...p} filterState="all" />
-        <FilterItem {...p} filterState="active" />
-        <FilterItem {...p} filterState="completed" />
-    </ul>;
+  <ul className="filters">
+    <FilterItem {...p} filterState="all" />
+    <FilterItem {...p} filterState="active" />
+    <FilterItem {...p} filterState="completed" />
+  </ul>;
 
 export const Footer = () => {
-    const p = useConnectedAppSelector<ViewProps>(s => ({
-        ...s,
-        liveItemCount: s.toDoItems.filter(x => !x.completed).length,
-        canClear: s.toDoItems.some(x => x.completed)
-    }));
-    return (
-        <footer className="footer">
-            <Count {...p} />
-            <Filters {...p} />
-            <ClearButton {...p} />
-        </footer>
-    );
+  const dispatch = useAppDispatch();
+  const p = useAppSelector<ViewProps>(s => ({
+    displayState: s.displayState,
+    liveItemCount: s.toDoItems.filter(x => !x.completed).length,
+    canClear: s.toDoItems.some(x => x.completed),
+    updateDisplayState: x => dispatch(ac.updateDisplayState(x)),
+    clearCompleted: () => dispatch(ac.clearCompleted())
+  }));
+  return (
+    <footer className="footer">
+      <Count {...p} />
+      <Filters {...p} />
+      <ClearButton {...p} />
+    </footer>
+  );
 };

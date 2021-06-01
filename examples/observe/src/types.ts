@@ -10,11 +10,27 @@ export interface AppState {
   toDoItems: ToDoItem[];
   displayState: DisplayState;
   newEntry: string;
-  editEntry: string;
-  editing?: number;
+  editing?: ToDoItem;
   loaded: boolean;
 }
+
 /*
+export interface ToDoItem {
+    text: string;
+    completed: boolean;
+}
+
+export type DisplayState = "all" | "active" | "completed";
+
+export interface AppState {
+    toDoItems: ToDoItem[];
+    displayState: DisplayState;
+    newEntry: string;
+    editEntry: string;
+    editing?: number;
+    loaded: boolean;
+}
+
 export const InitAppState: AppState = {
     toDoItems: [],
     loaded: false,
@@ -22,4 +38,5 @@ export const InitAppState: AppState = {
     newEntry: "",
     editEntry: ""
 };
+
 */

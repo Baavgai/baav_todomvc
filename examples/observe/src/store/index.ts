@@ -1,14 +1,33 @@
 export * from "./storeConfig";
 export * from "./actions";
+export * from "./types/public";
 
 import { AppState } from "types";
-import { Dispatch } from "redux";
+// import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
-import { Actions } from "store/actions";
+import { AppDispatch } from "store/types/public";
 
 // export type AppDispatch = Dispatch<Actions>;
 
-export type AppDispatchProp = { dispatch : Dispatch<Actions> };
+// import { AppDispatchProp } from "store/types/public";
+
+export const useAppSelector = <TSelected>(selector: (state: AppState) => TSelected, equalityFn?: (left: TSelected, right: TSelected) => boolean) =>
+  useSelector<AppState, TSelected>(selector, equalityFn);
+
+export const useAppDispatch = () =>
+  useDispatch<AppDispatch>();
+
+
+/*
+import { AppState } from "types";
+// import { Dispatch } from "redux";
+import { useDispatch, useSelector } from "react-redux";
+// import { Actions } from "store/types";
+
+// export type AppDispatch = Dispatch<Actions>;
+
+import { AppDispatchProp } from "store/types/public";
+
 
 export const useAppSelector = <TSelected>(selector: (state: AppState) => TSelected, equalityFn?: (left: TSelected, right: TSelected) => boolean) =>
     useSelector<AppState, TSelected>(selector, equalityFn);
@@ -30,3 +49,4 @@ export const useConnectedAppSelector = <T extends AppDispatchProp>(selector: (st
         return useAppSelector(exSelector);
     }
 };
+*/

@@ -1,45 +1,50 @@
 import * as React from "react";
-import { useConnectedAppSelector, AppDispatchProp } from "store";
+import { useAppDispatch, useAppSelector } from "store";
 import { TodoItem } from "components/TodoItem";
-import { toggleAll } from "store/actionCreators";
+import { ToDoItem as ItemType } from "types";
+import { toggleAll as toggleAllAction } from "store";
 
-interface ViewProps extends AppDispatchProp {
-    liveItems: number[];
+interface ViewProps {
+  // dispatch: AppDispatch;
+  toggleAll: () => void;
+  liveItems: ItemType[];
 }
+
 const Input = (p: ViewProps) =>
-    <input
-        id="toggle-all"
-        className="toggle-all"
-        type="checkbox"
-        onChange={e => p.dispatch(toggleAll())}
-        checked={p.liveItems.length === 0}
-    />;
+  <input
+    id="toggle-all"
+    className="toggle-all"
+    type="checkbox"
+    onChange={() => p.toggleAll()}
+    checked={p.liveItems.length === 0}
+  />;
 
 const TodoList = (p: ViewProps) =>
-    <ul className="todo-list">
-        {p.liveItems.map(x => <TodoItem key={x} itemIndex={x} />)}
-    </ul>;
+  <ul className="todo-list">
+    {p.liveItems.map(x => <TodoItem key={x.itemId} item={x} />)}
+  </ul>;
 
+const LiveView = (p: ViewProps) =>
+  <section className="main">
+    <Input {...p} />
+    <label htmlFor="toggle-all" />
+    <TodoList {...p} />
+  </section>;
+
+
+const Live = (p: { liveItems: ItemType[] }) => {
+  const dispatch = useAppDispatch();
+  return <LiveView {...p} toggleAll={() => dispatch(toggleAllAction())} />;
+};
 
 export const Main = () => {
-    const p = useConnectedAppSelector<ViewProps>(s => {
-        const liveItems = s.displayState === "all"
-            ? s.toDoItems.map((_, i) => i)
-            : s.toDoItems
-                .map((x, idx) => ({ idx, keep: x.completed === (s.displayState === "completed") }))
-                .filter(x => x.keep)
-                .map(x => x.idx);
-        return { liveItems };
-    });
-    return p.liveItems.length === 0
-        ? <></>
-        : (
-            <section className="main">
-                <Input {...p} />
-                <label htmlFor="toggle-all" />
-                <TodoList {...p} />
-            </section>
-        );
-
-
+  const liveItems = useAppSelector<ItemType[]>(s =>
+    s.displayState === "all"
+      ? s.toDoItems
+      : s.toDoItems
+        .map(x => ({ item: x, keep: x.completed === (s.displayState === "completed") }))
+        .filter(x => x.keep)
+        .map(x => x.item));
+  return liveItems.length === 0 ? <></> : <Live liveItems={liveItems} />;
 };
+//  p.dispatch(toggleAll())}

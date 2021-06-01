@@ -6,6 +6,7 @@ export interface Service {
   clearCompleted: () => Promise<void>;
   updateItem: (item: ToDoItem) => Promise<ToDoItem>;
   deleteItem: (itemId: number) => Promise<boolean>;
+  toggleItem: (itemId: number) => Promise<boolean>;
 }
 
 const getRandInRange = (minValue: number, maxValue: number) =>
@@ -55,6 +56,18 @@ class ServiceImpl implements Service {
         return true;
       }
     });
+
+  toggleItem = (itemId: number) =>
+    this.wait().then(() => {
+      const itemIndex = this.toDoItems.findIndex(x => x.itemId === itemId);
+      if (itemIndex === -1) {
+        return false;
+      } else {
+        this.toDoItems[itemIndex].completed = !this.toDoItems[itemIndex].completed;
+        return true;
+      }
+    });
+
 }
 
 interface State {
