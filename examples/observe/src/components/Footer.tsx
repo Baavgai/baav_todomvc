@@ -1,14 +1,12 @@
 import * as React from "react";
-import { useAppDispatch, useAppSelector } from "store";
-import * as ac from "store/actions";
+import { useAppController, useAppSelector, AppController } from "store";
+
 import { DisplayState } from "types";
 
-interface ViewProps {
+interface ViewProps extends Pick<AppController, "updateDisplayState" | "clearCompleted"> {
   displayState: DisplayState;
   liveItemCount: number;
   canClear: boolean;
-  updateDisplayState: (displayState: DisplayState) => void;
-  clearCompleted: () => void;
 }
 const ClearButton = (p: ViewProps) =>
   !p.canClear
@@ -41,13 +39,12 @@ const Filters = (p: ViewProps) =>
   </ul>;
 
 export const Footer = () => {
-  const dispatch = useAppDispatch();
+  const { updateDisplayState, clearCompleted } = useAppController();
   const p = useAppSelector<ViewProps>(s => ({
     displayState: s.displayState,
     liveItemCount: s.toDoItems.filter(x => !x.completed).length,
     canClear: s.toDoItems.some(x => x.completed),
-    updateDisplayState: x => dispatch(ac.updateDisplayState(x)),
-    clearCompleted: () => dispatch(ac.clearCompleted())
+    updateDisplayState, clearCompleted
   }));
   return (
     <footer className="footer">

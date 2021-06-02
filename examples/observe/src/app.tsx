@@ -2,20 +2,19 @@ import * as React from "react";
 
 import { Provider } from "react-redux";
 import { configureStore } from "store";
-import { appLoad } from "store/actions";
 import { AppPage } from "components/AppPage";
 import { initService } from "service";
 
-initService(["Get eggs.", "Get milk.", "Get bread.", "Make french toast."].map((text, i) => ({itemId: i + 1000, text, completed: i < 2 })), 0, 0);
+initService(["Get eggs.", "Get milk.", "Get bread.", "Make french toast."].map((text, i) => ({ itemId: i + 1000, text, completed: i < 2 })), 0, 0);
 const store = configureStore();
 
-store.dispatch(appLoad());
+store.dispatch({ type: "appLoad" });
 
 export const App = () =>
-    <Provider store={store}>
-        <AppPage />
-    </Provider>
-    ;
+  <Provider store={store}>
+    <AppPage />
+  </Provider>
+  ;
 
 /*
 import * as React from "react";

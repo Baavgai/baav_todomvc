@@ -1,11 +1,10 @@
 import * as React from "react";
-import { useAppDispatch, useAppSelector } from "store";
+import { useAppController, useAppSelector } from "store";
 import { TodoItem } from "components/TodoItem";
 import { ToDoItem as ItemType } from "types";
-import { toggleAll as toggleAllAction } from "store";
+
 
 interface ViewProps {
-  // dispatch: AppDispatch;
   toggleAll: () => void;
   liveItems: ItemType[];
 }
@@ -33,8 +32,8 @@ const LiveView = (p: ViewProps) =>
 
 
 const Live = (p: { liveItems: ItemType[] }) => {
-  const dispatch = useAppDispatch();
-  return <LiveView {...p} toggleAll={() => dispatch(toggleAllAction())} />;
+  const { toggleAll } = useAppController();
+  return <LiveView {...p} toggleAll={toggleAll} />;
 };
 
 export const Main = () => {

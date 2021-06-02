@@ -1,13 +1,12 @@
 import { Reducer } from "redux";
 import { AppState } from "types";
 import { PrivateActions } from "store/types/PrivateActions";
-import { ReducerActions } from "store/types/ReducerActions";
+import { ReducerActions } from "store/types/Actions";
 
 type Actions =
   | PrivateActions
   | ReducerActions
   ;
-
 
 const InitAppState: AppState = {
   toDoItems: [],
@@ -20,24 +19,27 @@ const InitAppState: AppState = {
 export const reducer: Reducer<AppState, Actions> = (state = InitAppState, action): AppState => {
   console.log("reducer action", action);
 
-  if (action.type === "@@app/startEditItem") {
+  if (action.type === "startEditItem") {
     const found = state.toDoItems.find(x => x.itemId === action.itemId);
     if (found === undefined) {
       return state;
     } else {
       return { ...state, editing: found };
     }
-  } else if (action.type === "@@app/undoEditItem") {
+  } else if (action.type === "undoEditItem") {
     return { ...state, editing: undefined };
 
-  } else if (action.type === "@@app/updateEditItem") {
+  } else if (action.type === "updateEditItem") {
     if (state.editing === undefined) {
       return state;
     } else {
       return { ...state, editing: {...state.editing, text: action.editEntry } };
     }
 
-  } else if (action.type === "@@app/mutateState") {
+  } else if (action.type === "updateCurrentEntry") {
+    return { ...state, newEntry: action.currentEntry };
+
+  } else if (action.type === "@fin/mutateState") {
     return { ...state, ...action.changes };
 
   } else {
@@ -46,6 +48,11 @@ export const reducer: Reducer<AppState, Actions> = (state = InitAppState, action
 };
 
 /*
+  | { type: "startEditItem"; itemId: number }
+  | { type: "undoEditItem" }
+  | { type: "updateEditItem"; editEntry: string }
+  | { type: "updateCurrentEntry"; currentEntry: string }
+
   } else if (action.type === "@@app/toggleItem") {
     return {
       ...state,

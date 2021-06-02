@@ -1,6 +1,15 @@
-import * as ac from "store/actions/private";
+import { AppState } from "types";
 
 export type PrivateActions =
-  | ReturnType<typeof ac.mutateState>
+  | { type: "@fin/mutateState"; changes: Partial<AppState> }
   ;
 
+/*
+| { type: "@fin/appLoad"; toDoItems: ToDoItem[]; }
+  | { type: "@fin/mutateState"; changes: Partial<AppState> }
+  | { type: "@priv/startEditItem"; itemId: number }
+  | { type: "@priv/undoEditItem" }
+  | { type: "@priv/updateEditItem"; editEntry: string }
+  | { type: "@priv/updateCurrentEntry"; currentEntry: string }
+
+*/
