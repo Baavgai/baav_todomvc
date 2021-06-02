@@ -5,36 +5,32 @@ import { ToDoItem as ItemType } from "types";
 
 
 interface ViewProps {
-  toggleAll: () => void;
   liveItems: ItemType[];
 }
 
-const Input = (p: ViewProps) =>
-  <input
+const Input = (p: ViewProps) => {
+  const { toggleAll } = useAppController();
+
+  return (<input
     id="toggle-all"
     className="toggle-all"
     type="checkbox"
-    onChange={() => p.toggleAll()}
+    onChange={toggleAll}
     checked={p.liveItems.length === 0}
-  />;
+  />);
+};
 
 const TodoList = (p: ViewProps) =>
   <ul className="todo-list">
     {p.liveItems.map(x => <TodoItem key={x.itemId} item={x} />)}
   </ul>;
 
-const LiveView = (p: ViewProps) =>
+const Live = (p: ViewProps) =>
   <section className="main">
     <Input {...p} />
     <label htmlFor="toggle-all" />
     <TodoList {...p} />
   </section>;
-
-
-const Live = (p: { liveItems: ItemType[] }) => {
-  const { toggleAll } = useAppController();
-  return <LiveView {...p} toggleAll={toggleAll} />;
-};
 
 export const Main = () => {
   const liveItems = useAppSelector<ItemType[]>(s =>
@@ -46,4 +42,3 @@ export const Main = () => {
         .map(x => x.item));
   return liveItems.length === 0 ? <></> : <Live liveItems={liveItems} />;
 };
-//  p.dispatch(toggleAll())}

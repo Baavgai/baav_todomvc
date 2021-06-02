@@ -1,15 +1,10 @@
-import { AppState } from "types";
+import { AppState, ToDoItem, DisplayState } from "types";
 
 export type PrivateActions =
-  | { type: "@fin/mutateState"; changes: Partial<AppState> }
+  | { type: "@fin/loadItems"; toDoItems: ToDoItem[]; displayState?: DisplayState }
   ;
 
 /*
-| { type: "@fin/appLoad"; toDoItems: ToDoItem[]; }
-  | { type: "@fin/mutateState"; changes: Partial<AppState> }
-  | { type: "@priv/startEditItem"; itemId: number }
-  | { type: "@priv/undoEditItem" }
-  | { type: "@priv/updateEditItem"; editEntry: string }
-  | { type: "@priv/updateCurrentEntry"; currentEntry: string }
+  | { type: "@fin/updateDisplayState"; toDoItems: ToDoItem[]; displayState: DisplayState }
 
 */

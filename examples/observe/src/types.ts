@@ -11,7 +11,7 @@ export interface AppState {
   displayState: DisplayState;
   newEntry: string;
   editing?: ToDoItem;
-  loaded: boolean;
+  // loaded: boolean;
 }
 
 /*

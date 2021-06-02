@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { useAppController, useAppSelector, AppController } from "store";
+import { useAppController, useAppSelector } from "store";
 import { ToDoItem } from "types";
 import { enterHandler } from "appUtil";
 
@@ -9,50 +9,47 @@ export interface TodoItemProps {
   item: ToDoItem;
 }
 
-interface ViewProps extends AppController {
-  item: ToDoItem;
-  editing: boolean;
-}
+// interface ViewProps extends AppController {  item: ToDoItem;  editing: boolean;}
 
-const ViewField = (p: ViewProps) =>
-  <div className="view">
+const ViewField = (p: TodoItemProps) => {
+  const { toggleItem, startEditItem, destroyItem } = useAppController();
+  return (
+    <div className="view">
+      <input
+        className="toggle"
+        type="checkbox"
+        checked={p.item.completed}
+        onChange={() => toggleItem(p.item.itemId)}
+      />
+      <label onDoubleClick={() => startEditItem(p.item.itemId)}>{p.item.text}</label>
+      <button className="destroy" onClick={() => destroyItem(p.item.itemId)} />
+    </div>);
+};
+
+
+const EditField = (p: TodoItemProps) => {
+  const { undoEditItem, updateEditItem, commitEditItem } = useAppController();
+  return (
     <input
-      className="toggle"
-      type="checkbox"
-      checked={p.item.completed}
-      onChange={() => p.toggleItem(p.item.itemId)}
-    />
-    <label onDoubleClick={() => p.startEditItem(p.item.itemId)}>{p.item.text}</label>
-    <button className="destroy" onClick={() => p.destroyItem(p.item.itemId)} />
-  </div>;
-
-const EditField = (p: ViewProps) =>
-  <input
-    className="edit"
-    value={p.item.text}
-    onBlur={() => p.undoEditItem()}
-    onChange={e => p.updateEditItem(e.target.value)}
-    onKeyDown={enterHandler(p.commitEditItem)}
-  />;
+      className="edit"
+      value={p.item.text}
+      onBlur={() => undoEditItem()}
+      onChange={e => updateEditItem(e.target.value)}
+      onKeyDown={enterHandler(commitEditItem)}
+    />);
+};
 
 export const TodoItem = (p: TodoItemProps) => {
-  const ac = useAppController();
-  const vp = useAppSelector<ViewProps>(s => {
-    const editing = p.item.itemId === s.editing?.itemId;
-    const item = editing ? s.editing! : p.item;
-    return {
-      item,
-      editing,
-      ...ac
-    };
+  // const ac = useAppController();
+  const { editing, item } = useAppSelector(s => {
+    const isEditing = p.item.itemId === s.editing?.itemId;
+    return { editing: isEditing, item: isEditing ? s.editing! : p.item };
   });
-  const itemClassName = [(vp.editing ? "editing" : undefined), (vp.item.completed ? "completed" : undefined)]
-    .filter(x => x)
-    .join(" ");
+  const itemClassName = [(editing ? "editing" : undefined), (item.completed ? "completed" : undefined)].filter(x => x).join(" ");
   return (
     <li className={itemClassName}>
-      <ViewField {...vp} />
-      <EditField {...vp} />
+      <ViewField item={item} />
+      <EditField item={item} />
     </li>
   );
 };
